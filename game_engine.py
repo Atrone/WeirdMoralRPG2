@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from typing import List, Dict, Optional
 from scenarios import base_scenarios
 from metrics import MoralityTracker
+from config import MAX_TURNS
 
 @dataclass
 class GameState:
