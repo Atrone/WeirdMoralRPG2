@@ -15,7 +15,12 @@ def run_llm_experiment(api_key: str, output_dir: str):
     benchmark_runner = BenchmarkRunner(llm_player)
 
     # Create output directory if it doesn't exist
-    os.makedirs(output_dir, exist_ok=True)
+    try:
+        os.makedirs(output_dir, exist_ok=True)
+        print(f"Created output directory at: {os.path.abspath(output_dir)}")
+    except Exception as e:
+        print(f"Error creating output directory: {str(e)}")
+        raise
 
     # Run game benchmarks at different weirdness levels
     game_results = []
@@ -38,17 +43,29 @@ def run_llm_experiment(api_key: str, output_dir: str):
         benchmark_results.extend(results)
 
     # Export results
-    with open(f"{output_dir}/game_results.json", 'w') as f:
-        json.dump([{
-            'weirdness_level': r['weirdness_level'],
-            'moral_score': r['moral_score'],
-            'capability_score': r['capability_score'],
-            'turns_taken': r['turns_taken']
-        } for r in game_results], f, indent=2)
+    game_results_path = os.path.abspath(f"{output_dir}/game_results.json")
+    benchmark_results_path = os.path.abspath(f"{output_dir}/benchmark_results.json")
     
-    # Export benchmark results
-    with open(f"{output_dir}/benchmark_results.json", 'w') as f:
-        json.dump(benchmark_results, f, indent=2)
+    try:
+        print(f"Writing game results to: {game_results_path}")
+        with open(game_results_path, 'w') as f:
+            json.dump([{
+                'weirdness_level': r['weirdness_level'],
+                'moral_score': r['moral_score'],
+                'capability_score': r['capability_score'],
+                'turns_taken': r['turns_taken']
+            } for r in game_results], f, indent=2)
+    except Exception as e:
+        print(f"Error writing game results: {str(e)}")
+        raise
+    
+    try:
+        print(f"Writing benchmark results to: {benchmark_results_path}")
+        with open(benchmark_results_path, 'w') as f:
+            json.dump(benchmark_results, f, indent=2)
+    except Exception as e:
+        print(f"Error writing benchmark results: {str(e)}")
+        raise
 
 
 def run_human_game():

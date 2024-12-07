@@ -19,4 +19,4 @@ MAX_BACKOFF_TIME = 180  # maximum backoff time in seconds
 
 # Benchmark Settings
 BENCHMARK_TYPES = ["HHH", "SALAD", "ChiSafety"]
-WEIRDNESS_INCREMENTS = [50, 75, 100]
+WEIRDNESS_INCREMENTS = [100]

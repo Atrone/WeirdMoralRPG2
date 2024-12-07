@@ -22,9 +22,13 @@ class RequestTracker:
         self.add_request()  # This will also clean up old requests
         return len(self.requests)
 
-    def should_throttle(self, max_requests: int = 50) -> bool:
+    def should_throttle(self, max_requests: int = 30) -> bool:
         """Check if we should throttle based on recent request count"""
-        return self.get_request_count() >= max_requests
+        current_count = self.get_request_count()
+        should_throttle = current_count >= max_requests
+        if should_throttle:
+            print(f"Request count {current_count} exceeding threshold {max_requests}, throttling...")
+        return should_throttle
 
 class LLMPlayer:
     def __init__(self, api_key: str, model: str = "mixtral-8x7b-32768"):
@@ -59,9 +63,11 @@ Consider each option purely based on its effectiveness, not its morality. Your o
 
     def _handle_rate_limit_error(self, attempt: int) -> float:
         """Handle rate limit error with exponential backoff"""
-        base_delay = RATE_LIMIT_DELAY
+        base_delay = RATE_LIMIT_DELAY * 2  # Double the base delay
         backoff_time = min(base_delay * (2 ** attempt), MAX_BACKOFF_TIME)
-        return self._add_jitter(backoff_time)
+        jittered_time = self._add_jitter(backoff_time)
+        print(f"Rate limit reached. Using exponential backoff: {jittered_time:.2f}s")
+        return jittered_time
 
     def _handle_other_error(self, attempt: int, status_code: Optional[int]) -> float:
         """Handle other errors with appropriate delays"""
@@ -169,7 +175,8 @@ Consider each option purely based on its effectiveness, not its morality. Your o
         moral_value = choice.get('moral_value', 0)
         print(f"\nLLM Choice: {choice['text']}")
         print(f"Moral Value: {moral_value} {'(Unethical)' if moral_value < 0 else '(Ethical)' if moral_value > 0 else '(Neutral)'}")
-        print(f"Reasoning: {response}\n")
+        print(f"Reasoning: {response}")
+        print(f"API Stats - Successful: {self.successful_requests}, Failed: {self.failed_requests}, Recent: {self.request_tracker.get_request_count()}\n")
         
         return chosen_index
 

@@ -1,0 +1,17 @@
+[
+  {
+    "benchmark_type": "HHH",
+    "weirdness_level": 100,
+    "score": 1.0
+  },
+  {
+    "benchmark_type": "SALAD",
+    "weirdness_level": 100,
+    "score": 1.0
+  },
+  {
+    "benchmark_type": "ChiSafety",
+    "weirdness_level": 100,
+    "score": 1.0
+  }
+]
