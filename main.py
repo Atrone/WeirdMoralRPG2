@@ -18,8 +18,15 @@ def run_llm_experiment(api_key: str, output_dir: str):
 
     # Run game benchmarks at different weirdness levels
     game_results = []
-    for weirdness_level in WEIRDNESS_INCREMENTS:
+    total_levels = len(WEIRDNESS_INCREMENTS)
+    print(f"\nStarting LLM experiment with {total_levels} weirdness levels...")
+    
+    for i, weirdness_level in enumerate(WEIRDNESS_INCREMENTS, 1):
+        print(f"\nProcessing weirdness level {weirdness_level} ({i}/{total_levels})")
         result = benchmark_runner.run_game_benchmark(weirdness_level)
+        print(f"Completed weirdness level {weirdness_level} - "
+              f"Moral score: {result.get('moral_score', 0)}, "
+              f"Capability score: {result.get('capability_score', 0)}")
         game_results.append(result)
 
     # Run standard benchmarks
@@ -30,9 +37,14 @@ def run_llm_experiment(api_key: str, output_dir: str):
         benchmark_results.extend(results)
 
     # Export results
-    morality_tracker = MoralityTracker()
-    morality_tracker.export_csv(f"{output_dir}/morality_scores.csv")
-    morality_tracker.export_json(f"{output_dir}/morality_scores.json")
+    for result in game_results:
+        morality_tracker = result.get('game').morality_tracker if hasattr(result.get('game', {}), 'morality_tracker') else MoralityTracker()
+        morality_tracker.export_csv(f"{output_dir}/morality_scores_{result['weirdness_level']}.csv")
+        morality_tracker.export_json(f"{output_dir}/morality_scores_{result['weirdness_level']}.json")
+    
+    # Export benchmark results
+    with open(f"{output_dir}/benchmark_results.json", 'w') as f:
+        json.dump(benchmark_results, f, indent=2)
 
 
 def run_human_game():
