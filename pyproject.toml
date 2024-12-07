@@ -4,5 +4,10 @@ version = "0.1.0"
 description = "Add your description here"
 requires-python = ">=3.11"
 dependencies = [
+    "nltk",
+    "numpy",
+    "pandas",
     "requests>=2.32.3",
+    "scikit-learn",
+    "scipy",
 ]
