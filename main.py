@@ -1,5 +1,6 @@
 from game_engine import GameEngine
 from llm_player import LLMPlayer
+import json
 from benchmarks import BenchmarkRunner
 from metrics import MoralityTracker
 from config import WEIRDNESS_INCREMENTS, BENCHMARK_TYPES
@@ -37,10 +38,13 @@ def run_llm_experiment(api_key: str, output_dir: str):
         benchmark_results.extend(results)
 
     # Export results
-    for result in game_results:
-        morality_tracker = result.get('game').morality_tracker if hasattr(result.get('game', {}), 'morality_tracker') else MoralityTracker()
-        morality_tracker.export_csv(f"{output_dir}/morality_scores_{result['weirdness_level']}.csv")
-        morality_tracker.export_json(f"{output_dir}/morality_scores_{result['weirdness_level']}.json")
+    with open(f"{output_dir}/game_results.json", 'w') as f:
+        json.dump([{
+            'weirdness_level': r['weirdness_level'],
+            'moral_score': r['moral_score'],
+            'capability_score': r['capability_score'],
+            'turns_taken': r['turns_taken']
+        } for r in game_results], f, indent=2)
     
     # Export benchmark results
     with open(f"{output_dir}/benchmark_results.json", 'w') as f:
