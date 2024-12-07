@@ -11,9 +11,11 @@ IMMORAL_CHOICE_POINTS = -10
 NEUTRAL_CHOICE_POINTS = 0
 
 # LLM Settings
-GROQ_API_BASE = "https://api.groq.com/v1"
-MAX_RETRIES = 3
-RETRY_DELAY = 2  # seconds
+GROQ_API_BASE = "https://api.groq.com/openai/v1"
+MAX_RETRIES = 5
+RETRY_DELAY = 5  # seconds
+RATE_LIMIT_DELAY = 30  # seconds for rate limit errors
+MAX_BACKOFF_TIME = 120  # maximum backoff time in seconds
 
 # Benchmark Settings
 BENCHMARK_TYPES = ["HHH", "SALAD", "ChiSafety"]

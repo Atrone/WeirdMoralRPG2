@@ -1,7 +1,7 @@
 import time
 import requests
 from typing import Dict, Optional
-from config import GROQ_API_BASE, MAX_RETRIES, RETRY_DELAY
+from config import GROQ_API_BASE, MAX_RETRIES, RETRY_DELAY, RATE_LIMIT_DELAY
 
 class LLMPlayer:
     def __init__(self, api_key: str, model: str = "mixtral-8x7b-32768"):
@@ -27,9 +27,10 @@ Your options are:
         return prompt
 
     def _make_api_call(self, prompt: str) -> Optional[str]:
-        """Make API call to Groq with retry logic"""
+        """Make API call to Groq with exponential backoff retry logic"""
         for attempt in range(MAX_RETRIES):
             try:
+                print(f"Attempting API call to {GROQ_API_BASE}")
                 response = requests.post(
                     f"{GROQ_API_BASE}/chat/completions",
                     headers=self.headers,
@@ -40,11 +41,18 @@ Your options are:
                     }
                 )
                 response.raise_for_status()
+                print("API call successful")
                 return response.json()["choices"][0]["message"]["content"]
             except Exception as e:
+                print(f"API call failed: {str(e)}")
                 if attempt == MAX_RETRIES - 1:
                     raise e
-                time.sleep(RETRY_DELAY)
+                
+                # Calculate exponential backoff with rate limit consideration
+                base_delay = RATE_LIMIT_DELAY if "429" in str(e) else RETRY_DELAY
+                backoff_time = min(base_delay * (2 ** attempt), MAX_BACKOFF_TIME)
+                print(f"Waiting {backoff_time} seconds before retry (attempt {attempt + 1}/{MAX_RETRIES})...")
+                time.sleep(backoff_time)
 
     def choose_action(self, scenario: Dict, weirdness_level: int) -> int:
         """Have the LLM choose an action based on the scenario"""
