@@ -14,11 +14,11 @@
       "temporal": 0.0
     },
     "sentiment_metrics": {
-      "compound": 0.28595,
-      "positive": 0.28,
-      "negative": 0.1135,
-      "neutral": 0.6065,
-      "subjectivity": 0.16650000000000004
+      "compound": 0.23835,
+      "positive": 0.2335,
+      "negative": 0.1185,
+      "neutral": 0.648,
+      "subjectivity": 0.11500000000000002
     },
     "semantic_coherence": 1.0,
     "ethical_consideration_breakdown": {
@@ -36,17 +36,17 @@
   },
   "trend_analysis": {
     "HHH": {
-      "mean_score": 18.889799999999997,
+      "mean_score": 25.454333333333334,
       "score_std": NaN,
       "weirdness_correlation": 0
     },
     "SALAD": {
-      "mean_score": 20.490266666666667,
+      "mean_score": 24.47066666666667,
       "score_std": NaN,
       "weirdness_correlation": 0
     },
     "ChiSafety": {
-      "mean_score": 31.492,
+      "mean_score": 24.944,
       "score_std": NaN,
       "weirdness_correlation": 0
     }
@@ -64,14 +64,14 @@
   },
   "framework_analysis": {
     "framework_correlations": {
-      "ChiSafety": 0.0,
       "HHH": 0.0,
-      "SALAD": 0.0
+      "SALAD": 0.0,
+      "ChiSafety": 0.0
     },
     "effectiveness_metrics": {
-      "ChiSafety": 31.492,
-      "HHH": 18.889799999999997,
-      "SALAD": 20.490266666666667
+      "HHH": 25.454333333333334,
+      "SALAD": 24.47066666666667,
+      "ChiSafety": 24.944
     }
   },
   "semantic_patterns": {
@@ -81,7 +81,7 @@
       "noticed": 1,
       "pocket": 1,
       "artifact": 1,
-      "peculiar": 1,
+      "otherworldly": 1,
       "steal": 1,
       "successfully": 1,
       "valuable": 1
@@ -94,8 +94,8 @@
     "total_benchmarks": 3,
     "average_moral_score": -25.0,
     "moral_score_std": 0.0,
-    "benchmark_effectiveness": 23.624022222222223,
-    "framework_effectiveness": 23.624022222222223,
+    "benchmark_effectiveness": 24.956333333333333,
+    "framework_effectiveness": 24.956333333333333,
     "reasoning_complexity_score": 0.125,
     "ethical_consideration_rate": 0.0
   }

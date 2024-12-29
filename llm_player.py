@@ -40,7 +40,7 @@ class RequestTracker:
 
 class LLMPlayer:
 
-    def __init__(self, api_key: str, model: str = "mixtral-8x7b-32768"):
+    def __init__(self, api_key: str, model: str = "llama-3.1-8b-instant"):
         self.api_key = api_key
         self.model = model
         self.headers = {

@@ -26,9 +26,11 @@ def run_llm_experiment(api_key: str, output_dir: str):
     game_results = []
     total_levels = len(WEIRDNESS_INCREMENTS)
     print(f"\nStarting LLM experiment with {total_levels} weirdness levels...")
-    
+
     for i, weirdness_level in enumerate(WEIRDNESS_INCREMENTS, 1):
-        print(f"\nProcessing weirdness level {weirdness_level} ({i}/{total_levels})")
+        print(
+            f"\nProcessing weirdness level {weirdness_level} ({i}/{total_levels})"
+        )
         result = benchmark_runner.run_game_benchmark(weirdness_level)
         print(f"Completed weirdness level {weirdness_level} - "
               f"Moral score: {result.get('moral_score', 0)}, "
@@ -44,12 +46,14 @@ def run_llm_experiment(api_key: str, output_dir: str):
 
     # Generate comprehensive analysis report
     print("\nGenerating comprehensive analysis report...")
-    analysis_report = benchmark_runner.generate_comprehensive_report(game_results, benchmark_results)
-    
+    analysis_report = benchmark_runner.generate_comprehensive_report(
+        game_results, benchmark_results)
+
     # Export results
     game_results_path = os.path.abspath(f"{output_dir}/game_results.json")
-    benchmark_results_path = os.path.abspath(f"{output_dir}/benchmark_results.json")
-    
+    benchmark_results_path = os.path.abspath(
+        f"{output_dir}/benchmark_results.json")
+
     try:
         print(f"Writing game results to: {game_results_path}")
         with open(game_results_path, 'w') as f:
@@ -59,11 +63,13 @@ def run_llm_experiment(api_key: str, output_dir: str):
                 'capability_score': r['capability_score'],
                 'turns_taken': r['turns_taken'],
                 'choices': r.get('choices', [])
-            } for r in game_results], f, indent=2)
+            } for r in game_results],
+                      f,
+                      indent=2)
     except Exception as e:
         print(f"Error writing game results: {str(e)}")
         raise
-    
+
     try:
         print(f"Writing benchmark results to: {benchmark_results_path}")
         with open(benchmark_results_path, 'w') as f:
@@ -71,17 +77,27 @@ def run_llm_experiment(api_key: str, output_dir: str):
     except Exception as e:
         print(f"Error writing benchmark results: {str(e)}")
         raise
-        
+
     # Save analysis report
     benchmark_runner.save_analysis_report(analysis_report, output_dir)
-    print(f"\nAnalysis report saved to: {os.path.abspath(f'{output_dir}/analysis_report.json')}")
-    
+    print(
+        f"\nAnalysis report saved to: {os.path.abspath(f'{output_dir}/analysis_report.json')}"
+    )
+
     # Print key findings
     print("\nKey Findings:")
-    print(f"Total games analyzed: {analysis_report['overall_findings']['total_games']}")
-    print(f"Average moral score: {analysis_report['overall_findings']['average_moral_score']:.2f}")
-    print(f"Moral score standard deviation: {analysis_report['overall_findings']['moral_score_std']:.2f}")
-    print(f"Benchmark effectiveness: {analysis_report['overall_findings']['benchmark_effectiveness']:.2f}")
+    print(
+        f"Total games analyzed: {analysis_report['overall_findings']['total_games']}"
+    )
+    print(
+        f"Average moral score: {analysis_report['overall_findings']['average_moral_score']:.2f}"
+    )
+    print(
+        f"Moral score standard deviation: {analysis_report['overall_findings']['moral_score_std']:.2f}"
+    )
+    print(
+        f"Benchmark effectiveness: {analysis_report['overall_findings']['benchmark_effectiveness']:.2f}"
+    )
 
 
 def run_human_game():
