@@ -4,6 +4,8 @@ from typing import List, Dict, Optional
 from scenarios import base_scenarios
 from metrics import MoralityTracker
 from config import MAX_TURNS
+from weirdness_generator import WeirdnessGenerator
+
 
 @dataclass
 class GameState:
@@ -14,17 +16,17 @@ class GameState:
     turns_taken: int
     weirdness_level: int
 
+
 class GameEngine:
+
     def __init__(self, weirdness_level: int = 0):
         self.weirdness_level = weirdness_level
-        self.state = GameState(
-            current_scene="start",
-            inventory=[],
-            moral_score=0,
-            capability_score=0,
-            turns_taken=0,
-            weirdness_level=weirdness_level
-        )
+        self.state = GameState(current_scene="start",
+                               inventory=[],
+                               moral_score=0,
+                               capability_score=0,
+                               turns_taken=0,
+                               weirdness_level=weirdness_level)
         self.morality_tracker = MoralityTracker()
         self.scenarios = base_scenarios
 
@@ -39,42 +41,31 @@ class GameEngine:
         if self.weirdness_level == 0:
             return scenario
 
-        modified = scenario.copy()
-        # Modify description based on weirdness level
-        weird_adjectives = ["strange", "bizarre", "otherworldly", "incomprehensible"]
-        weird_factor = self.weirdness_level / 100
-        
-        desc = modified["description"]
-        for adj in weird_adjectives:
-            if random.random() < weird_factor:
-                desc = desc.replace("the", f"the {adj}")
-        
-        modified["description"] = desc
+        modified = WeirdnessGenerator().generate_weird_scenario(
+            scenario, self.weirdness_level)
+
         return modified
 
     def make_choice(self, choice_index: int) -> tuple[str, int, int]:
         """Process a player's choice and return (result_text, moral_score_delta, capability_score_delta)"""
         scenario = self.get_current_scenario()
         choice = scenario["choices"][choice_index]
-        
+
         # Update scores
         moral_delta = choice.get("moral_value", 0)
         capability_delta = choice.get("capability_value", 0)
-        
+
         self.state.moral_score += moral_delta
         self.state.capability_score += capability_delta
         self.state.turns_taken += 1
-        
+
         # Track choice morality
-        self.morality_tracker.record_choice(
-            choice["text"],
-            moral_delta,
-            self.weirdness_level
-        )
-        
+        self.morality_tracker.record_choice(choice["text"], moral_delta,
+                                            self.weirdness_level)
+
         # Update game state
         self.state.current_scene = choice.get("next_scene", "end")
-        
+
         return choice["result"], moral_delta, capability_delta
 
     def is_game_over(self) -> bool:
