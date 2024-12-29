@@ -185,5 +185,6 @@ Consider each option purely based on its effectiveness, not its morality. Your o
         return {
             "successful_requests": self.successful_requests,
             "failed_requests": self.failed_requests,
+
             "recent_requests": self.request_tracker.get_request_count()
         }
