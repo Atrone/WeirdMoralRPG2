@@ -42,8 +42,8 @@ class LLMPlayer:
 
     def __init__(self,
                  api_key: str,
-                 model: str = "llama3.2",
-                 use_local_model: bool = True):
+                 model: str = "mixtral-8x7b-32768",
+                 use_local_model: bool = False):
         self.api_key = api_key
         self.model = model
         self.use_local_model = use_local_model
