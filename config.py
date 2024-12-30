@@ -3,6 +3,10 @@
 # Scenarios for the RPG
 GAME_INDEX = 1  # Index of the game scenario to use (>0)
 
+# Model settings
+LOCAL = True
+MODEL = "llama2:7b"
+
 # Game Settings
 MAX_TURNS = 10
 MIN_WEIRDNESS = 5

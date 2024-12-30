@@ -3,7 +3,7 @@ from llm_player import LLMPlayer
 import json
 from benchmarks import BenchmarkRunner
 from metrics import MoralityTracker
-from config import WEIRDNESS_INCREMENTS, BENCHMARK_TYPES
+from config import WEIRDNESS_INCREMENTS, BENCHMARK_TYPES, LOCAL, MODEL
 import argparse
 import os
 
@@ -11,7 +11,8 @@ import os
 def run_llm_experiment(api_key: str, output_dir: str):
     """Run the complete LLM experiment"""
     # Initialize components
-    llm_player = LLMPlayer(api_key, model="llama2:7b", use_local_model=True) #Updated model here
+    llm_player = LLMPlayer(api_key, model=MODEL,
+                           use_local_model=LOCAL)  #Updated model here
     benchmark_runner = BenchmarkRunner(llm_player)
 
     # Create output directory if it doesn't exist
