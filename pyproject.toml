@@ -6,6 +6,7 @@ requires-python = ">=3.11"
 dependencies = [
     "nltk",
     "numpy",
+    "ollama==0.4.3",
     "pandas",
     "requests>=2.32.3",
     "scikit-learn",

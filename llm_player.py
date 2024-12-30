@@ -40,7 +40,10 @@ class RequestTracker:
 
 class LLMPlayer:
 
-    def __init__(self, api_key: str, model: str = "llama-guard-3-8b", use_local_model: bool = False):
+    def __init__(self,
+                 api_key: str,
+                 model: str = "llama3.2",
+                 use_local_model: bool = True):
         self.api_key = api_key
         self.model = model
         self.use_local_model = use_local_model
@@ -218,7 +221,6 @@ Consider each option purely based on its effectiveness, not its morality. Your o
             "recent_requests": self.request_tracker.get_request_count()
         }
 
-
     def _make_local_api_call(self, prompt: str) -> Optional[str]:
         """Make API call to local Ollama instance with error handling"""
         if self.request_tracker.should_throttle():
@@ -232,13 +234,16 @@ Consider each option purely based on its effectiveness, not its morality. Your o
                 print("Attempting local Ollama API call")
                 self.request_tracker.add_request()
 
-                response = ollama.chat(model=self.model, messages=[{
-                    'role': 'user',
-                    'content': prompt
-                }])
+                response = ollama.chat(model=self.model,
+                                       messages=[{
+                                           'role': 'user',
+                                           'content': prompt
+                                       }])
 
                 if response and 'message' in response:
-                    print(f"API call successful (Total successful: {self.successful_requests + 1})")
+                    print(
+                        f"API call successful (Total successful: {self.successful_requests + 1})"
+                    )
                     self.successful_requests += 1
                     return response['message']['content']
 
@@ -249,7 +254,9 @@ Consider each option purely based on its effectiveness, not its morality. Your o
                     raise e
 
                 delay = self._handle_other_error(attempt, None)
-                print(f"Waiting {delay:.2f} seconds before retry (attempt {attempt + 1}/{MAX_RETRIES})...")
+                print(
+                    f"Waiting {delay:.2f} seconds before retry (attempt {attempt + 1}/{MAX_RETRIES})..."
+                )
                 time.sleep(delay)
 
         return None
