@@ -11,7 +11,7 @@ import os
 def run_llm_experiment(api_key: str, output_dir: str):
     """Run the complete LLM experiment"""
     # Initialize components
-    llm_player = LLMPlayer(api_key)
+    llm_player = LLMPlayer(api_key, model="llama2:7b", use_local_model=True) #Updated model here
     benchmark_runner = BenchmarkRunner(llm_player)
 
     # Create output directory if it doesn't exist
