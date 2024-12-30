@@ -86,6 +86,8 @@ def run_llm_experiment(api_key: str, output_dir: str):
 
     # Print key findings
     print("\nKey Findings:")
+
+    print(f"Model: {llm_player.model}")
     print(
         f"Total games analyzed: {analysis_report['overall_findings']['total_games']}"
     )

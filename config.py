@@ -1,5 +1,8 @@
 # Configuration settings for the RPG research platform
 
+# Scenarios for the RPG
+GAME_INDEX = 1  # Index of the game scenario to use (>0)
+
 # Game Settings
 MAX_TURNS = 10
 MIN_WEIRDNESS = 5

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import List, Dict, Optional
 from scenarios import base_scenarios
 from metrics import MoralityTracker
-from config import MAX_TURNS
+from config import MAX_TURNS, GAME_INDEX
 from weirdness_generator import WeirdnessGenerator
 
 
@@ -28,7 +28,7 @@ class GameEngine:
                                turns_taken=0,
                                weirdness_level=weirdness_level)
         self.morality_tracker = MoralityTracker()
-        self.scenarios = base_scenarios
+        self.scenarios = base_scenarios  #[GAME_INDEX]
 
     def get_current_scenario(self) -> Dict:
         """Get the current scenario with applied weirdness modifications"""
