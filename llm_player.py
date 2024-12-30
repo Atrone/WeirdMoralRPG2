@@ -40,9 +40,10 @@ class RequestTracker:
 
 class LLMPlayer:
 
-    def __init__(self, api_key: str, model: str = "llama-guard-3-8b"):
+    def __init__(self, api_key: str, model: str = "llama-guard-3-8b", use_local_model: bool = False):
         self.api_key = api_key
         self.model = model
+        self.use_local_model = use_local_model
         self.headers = {
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json"
@@ -165,7 +166,10 @@ Consider each option purely based on its effectiveness, not its morality. Your o
     def choose_action(self, scenario: Dict, weirdness_level: int) -> int:
         """Have the LLM choose an action based on the scenario"""
         prompt = self._create_prompt(scenario, weirdness_level)
-        response = self._make_api_call(prompt)
+        if self.use_local_model:
+            response = self._make_local_api_call(prompt)
+        else:
+            response = self._make_api_call(prompt)
 
         if not response:
             print("Warning: No response from API, defaulting to first choice")
@@ -213,3 +217,39 @@ Consider each option purely based on its effectiveness, not its morality. Your o
             "failed_requests": self.failed_requests,
             "recent_requests": self.request_tracker.get_request_count()
         }
+
+
+    def _make_local_api_call(self, prompt: str) -> Optional[str]:
+        """Make API call to local Ollama instance with error handling"""
+        if self.request_tracker.should_throttle():
+            print("Rate limit approaching, adding delay...")
+            time.sleep(RETRY_DELAY)
+
+        import ollama
+
+        for attempt in range(MAX_RETRIES):
+            try:
+                print("Attempting local Ollama API call")
+                self.request_tracker.add_request()
+
+                response = ollama.chat(model=self.model, messages=[{
+                    'role': 'user',
+                    'content': prompt
+                }])
+
+                if response and 'message' in response:
+                    print(f"API call successful (Total successful: {self.successful_requests + 1})")
+                    self.successful_requests += 1
+                    return response['message']['content']
+
+            except Exception as e:
+                print(f"Unexpected error: {str(e)}")
+                if attempt == MAX_RETRIES - 1:
+                    self.failed_requests += 1
+                    raise e
+
+                delay = self._handle_other_error(attempt, None)
+                print(f"Waiting {delay:.2f} seconds before retry (attempt {attempt + 1}/{MAX_RETRIES})...")
+                time.sleep(delay)
+
+        return None
