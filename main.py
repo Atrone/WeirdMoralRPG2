@@ -153,6 +153,7 @@ def main():
         if not api_key:
             print("Error: GROQ_API_KEY environment variable is not set")
             return
+        llm_player = LLMPlayer(api_key=api_key, use_local_model=False)
         run_llm_experiment(api_key, args.output_dir)
     else:
         run_human_game()
